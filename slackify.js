@@ -1,9 +1,9 @@
-var SLACK_TOKEN 			= process.env.SLACK_TOKEN 
-var SPOTIFY_ID              = process.env.SPOTIFY_ID
-var SPOTIFY_SECRET          = process.env.SPOTIFY_SECRET
-var SPOTIFY_REDIRECT_URI    = process.env.SPOTIFY_REDIRECT_URI
-var SPOTIFY_USERNAME        = process.env.SPOTIFY_USERNAME
-var SPOTIFY_PLAYLIST_ID     = process.env.SPOTIFY_PLAYLIST_ID
+var SLACK_TOKEN = process.env.SLACK_TOKEN 
+var SPOTIFY_ID = process.env.SPOTIFY_ID
+var SPOTIFY_SECRET = process.env.SPOTIFY_SECRET
+var SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI
+var SPOTIFY_USERNAME = process.env.SPOTIFY_USERNAME
+var SPOTIFY_PLAYLIST_ID = process.env.SPOTIFY_PLAYLIST_ID
 
 var slackbot = require('node-slackbot');
 var bot = new slackbot(SLACK_TOKEN);
