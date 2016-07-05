@@ -200,11 +200,11 @@ bot.use(function(message, cb) {
 				trackName = trackName.replace('official video', '');
 				trackName = trackName.replace('video', '');
 				trackName = trackName.replace('lyrics', '');
+				trackName = trackName.replace('()', '');
 					
 				console.log("going to search spotify for youtube song " + trackName);		
 				spotifyApi.searchTracks(trackName)
 					    	.then(function(data) {
- 							   console.log(data.body);
 							   addTrack(data.body.tracks.items[0].id);
 							}, function(err) {
 						      console.error(err);
@@ -234,7 +234,7 @@ bot.use(function(message, cb) {
 				console.log("unknown title:" + trackName);				
 				spotifyApi.searchTracks(trackName)
 					    	.then(function(data) {
-								console.log("searching for spotify?")
+							   console.log("searching unknown source on spotify")
 							   console.log(data.body);
 							   addTrack(data.body.tracks.items[0].id);
 							   
