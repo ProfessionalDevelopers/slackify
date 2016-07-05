@@ -1,3 +1,6 @@
+var path = require('path');
+require('dotenv').config({ path: path.resolve('./env_variables') });
+
 var SLACK_TOKEN = process.env.SLACK_TOKEN 
 var SPOTIFY_ID = process.env.SPOTIFY_ID
 var SPOTIFY_SECRET = process.env.SPOTIFY_SECRET
@@ -13,12 +16,12 @@ var MetaInspector = require('node-metainspector');
 var itunes = require('itunes-search')
 
 var SpotifyWebApi = require('spotify-web-api-node');
-
 var spotifyApi = new SpotifyWebApi({
   clientId : SPOTIFY_ID,
   clientSecret : SPOTIFY_SECRET//,
  // redirectUri : SPOTIFY_REDIRECT_URI
 });
+var access_token;
 
 var spotifyUri = require('spotify-uri');
 var parsed, uri;
@@ -29,12 +32,6 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
-
-var client_id = SPOTIFY_ID; // Your client id
-var client_secret = SPOTIFY_SECRET; // Your secret
-var redirect_uri = SPOTIFY_REDIRECT_URI; // Your redirect uri
-
-var access_token;
 
 var generateRandomString = function(length) {
   var text = '';
@@ -63,9 +60,9 @@ app.get('/login', function(req, res) {
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
-      client_id: client_id,
+      client_id: SPOTIFY_ID,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: SPOTIFY_REDIRECT_URI,
       state: state
     }));
 });
@@ -90,11 +87,11 @@ app.get('/callback', function(req, res) {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
-        redirect_uri: redirect_uri,
+        redirect_uri: SPOTIFY_REDIRECT_URI,
         grant_type: 'authorization_code'
       },
       headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        'Authorization': 'Basic ' + (new Buffer(SPOTIFY_ID + ':' + SPOTIFY_SECRET).toString('base64'))
       },
       json: true
     };
@@ -138,7 +135,7 @@ app.get('/refresh_token', function(req, res) {
   var refresh_token = req.query.refresh_token;
   var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+    headers: { 'Authorization': 'Basic ' + (new Buffer(SPOTIFY_ID + ':' + SPOTIFY_SECRET).toString('base64')) },
     form: {
       grant_type: 'refresh_token',
       refresh_token: refresh_token
@@ -169,17 +166,6 @@ function addTrack(id)
     }, function(err) {
       console.log('Something went wrong!', err);
     });		
-}
-
-function getQueryVariable(variable)
-{
-       var query = window.location.search.substring(1);
-       var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
 }
 
 bot.use(function(message, cb) {
