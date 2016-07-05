@@ -160,7 +160,10 @@ app.listen(8888);
 
 function addTrack(id) 
 {
-  spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id])
+  spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], 
+	{
+    position : 0
+  })
     .then(function(data) {
       console.log('Added tracks to playlist!');
     }, function(err) {
