@@ -158,14 +158,14 @@ app.get('/refresh_token', function(req, res) {
 console.log('Listening on 8888');
 app.listen(8888);
 
-function addTrack(id) 
+function addTrack(id, trackName) 
 {
   spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], 
 	{
     position : 0
   })
     .then(function(data) {
-      console.log('Added tracks to playlist!');
+      console.log('Added track ' + trackName + ' to playlist!');
     }, function(err) {
       console.log('Something went wrong!', err);
     });		
@@ -182,12 +182,12 @@ bot.use(function(message, cb) {
 		
 		if(urls[i].indexOf("spotify.com") > -1) {
 			
-			console.log("it's a spotify url");
+			console.log("it's a Spotify url!");
 			urls[i] = urls[i].slice(0, -3);
 			parsed = spotifyUri.parse(urls[i]);
 			trackID = parsed.id;
-			addTrack(trackID);
-			
+			addTrack(trackID, "directly from a spotify URI");
+
 		} else if(urls[i].indexOf("youtube.com") > -1 || urls[i].indexOf("youtu.be") > -1) {			
 			console.log("it's youtube");
 			
@@ -205,7 +205,7 @@ bot.use(function(message, cb) {
 				console.log("going to search spotify for youtube song " + trackName);		
 				spotifyApi.searchTracks(trackName)
 					    	.then(function(data) {
-							   addTrack(data.body.tracks.items[0].id);
+							   addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
 							}, function(err) {
 						      console.error(err);
 						    });
@@ -235,8 +235,7 @@ bot.use(function(message, cb) {
 				spotifyApi.searchTracks(trackName)
 					    	.then(function(data) {
 							   console.log("searching unknown source on spotify")
-							   console.log(data.body);
-							   addTrack(data.body.tracks.items[0].id);
+							   addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
 							   
 							}, function(err) {
 						      console.error(err);
