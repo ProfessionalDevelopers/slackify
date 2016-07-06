@@ -181,14 +181,14 @@ bot.use(function (message, cb) {
 
             if (urls[i].indexOf("spotify.com") > -1) {
 
-                console.log("it's a Spotify url!");
+                console.log("It's a Spotify URL!");
                 urls[i] = urls[i].slice(0, -3);
                 parsed = spotifyUri.parse(urls[i]);
                 trackID = parsed.id;
-                addTrack(trackID, "directly from a spotify URI");
+                addTrack(trackID, "a spotify URL");
 
             } else if (urls[i].indexOf("youtube.com") > -1 || urls[i].indexOf("youtu.be") > -1) {
-                console.log("it's youtube");
+                console.log("It's a YouTube URL!");
 
                 var client = new MetaInspector(urls[i], {
                     maxRedirects: 10
@@ -203,9 +203,9 @@ bot.use(function (message, cb) {
                     trackName = trackName.replace('lyrics', '');
                     trackName = trackName.replace('()', '');
 
-                    console.log("going to search spotify for youtube song " + trackName);
                     spotifyApi.searchTracks(trackName)
                         .then(function (data) {
+		                    console.log("Searching spotify for YouTube track: " + trackName);
                             addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
                         }, function (err) {
                             console.error(err);
@@ -224,6 +224,8 @@ bot.use(function (message, cb) {
                 urls[i].indexOf("itunes.com") > -1 ||
                 urls[i].indexOf("itun.es") > -1) {
 
+                console.log("It's an iTunes URL!");
+
                 urls[i] = urls[i].slice(0, -1);
                 var parsed = querystring.parse(url.parse(urls[i]).query);
                 var itunesID = parsed.i;
@@ -241,7 +243,7 @@ bot.use(function (message, cb) {
 
                         spotifyApi.searchTracks(trackName)
                             .then(function (data) {
-                                console.log("Searching spotify for iTunes track:" + trackName);
+                                console.log("Searching spotify for iTunes track: " + trackName);
                                 addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
 
                             }, function (err) {
@@ -251,17 +253,16 @@ bot.use(function (message, cb) {
                     }
                 });
             } else {
-                console.log("adding an unknown source")
+                console.log("Adding an unknown source from" + urls[i]);
 
                 var client = new MetaInspector(urls[i], {
                     maxRedirects: 10
                 });
                 client.on("fetch", function () {
                     trackName = client.title;
-                    console.log("unknown title:" + trackName);
                     spotifyApi.searchTracks(trackName)
                         .then(function (data) {
-                            console.log("searching unknown source on spotify")
+		                    console.log("Searching spotify for unknown source: " + trackName);
                             addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
 
                         }, function (err) {
