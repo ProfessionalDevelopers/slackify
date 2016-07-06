@@ -32,6 +32,7 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var url = require('url');
 
 var generateRandomString = function(length) {
   var text = '';
@@ -165,7 +166,7 @@ function addTrack(id, trackName)
     position : 0
   })
     .then(function(data) {
-      console.log('Added track ' + trackName + ' to playlist!');
+      console.log('Added best match for ' + trackName + ' to playlist!');
     }, function(err) {
       console.log('Something went wrong!', err);
     });		
@@ -223,8 +224,32 @@ bot.use(function(message, cb) {
 				urls[i].indexOf("itunes.com") > -1 || 
 				urls[i].indexOf("itun.es") > -1) {			
 				
-					console.log("it's itunes. TBD;")
- 
+				urls[i] = urls[i].slice(0, -1);
+				var parsed = querystring.parse(url.parse(urls[i]).query);
+				var itunesID = parsed.i;
+				
+						var options = {
+						   id: itunesID
+						};
+
+						itunes.lookup(options, function(err, response) {
+						    if (err) {
+						        console.log(err);
+						    } else {
+						       // console.log(response);
+								trackName = response.results[0].artistName + " " + response.results[0].trackName;
+
+							spotifyApi.searchTracks(trackName)
+						    	.then(function(data) {
+									console.log("Searching spotify for iTunes track:" + trackName);
+									addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
+
+								}, function(err) {
+							      console.error(err);
+							    });
+
+						    }
+						});
 		} else {
 			console.log("adding an unknown source")
 			
