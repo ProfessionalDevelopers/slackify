@@ -22,6 +22,7 @@ var spotifyApi = new SpotifyWebApi({
     clientId: SPOTIFY_ID,
     clientSecret: SPOTIFY_SECRET
 });
+
 var access_token;
 
 var spotifyUri = require('spotify-uri');
@@ -34,6 +35,8 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var url = require('url');
+
+var replaceall = require("replaceall");
 
 var generateRandomString = function (length) {
     var text = '';
@@ -168,6 +171,30 @@ function addTrack(id, trackName) {
         });
 }
 
+function trimTitle(trackName){
+	trackName = replaceall('Official', '', trackName);
+	trackName = replaceall('official', '', trackName);
+	trackName = replaceall('OFFICIAL', '', trackName);
+	trackName = replaceall('Video', '', trackName);
+	trackName = replaceall('video', '', trackName);
+	trackName = replaceall('VIDEO', '', trackName);
+	trackName = replaceall('Live', '', trackName);
+	trackName = replaceall('live', '', trackName);
+	trackName = replaceall('LIVE', '', trackName);
+	trackName = replaceall('Performing', '', trackName);
+	trackName = replaceall('performing', '', trackName);
+	trackName = replaceall('PERFORMING', '', trackName);
+	trackName = replaceall('Lyrics', '', trackName);
+	trackName = replaceall('lyrics', '', trackName);
+	trackName = replaceall('LYRICS', '', trackName);
+	trackName = replaceall('()', '', trackName);
+	trackName = replaceall('Genius', ' ', trackName);
+	trackName = replaceall('|', '', trackName);
+	trackName = replaceall('  ', ' ', trackName);
+	
+	return trackName;
+}
+
 bot.use(function (message, cb) {
     if ('message' == message.type && message.text) {
 
@@ -187,29 +214,32 @@ bot.use(function (message, cb) {
                 trackID = parsed.id;
                 addTrack(trackID, "a spotify URL");
 
-            } else if (urls[i].indexOf("youtube.com") > -1 || urls[i].indexOf("youtu.be") > -1) {
-                console.log("It's a YouTube URL!");
+            } else if (	urls[i].indexOf("youtube.com") > -1 || 
+						urls[i].indexOf("youtu.be") > -1 ||
+						urls[i].indexOf("vimeo.com") > -1) {
+
+							urls[i] = urls[i].slice(0, -1);	
+							if(urls[i].indexOf("vimeo.com") > -1) {
+								urls[i] = urls[i].slice(0, -2);	
+							}
+							
+
+                console.log("It's a vimeo or YouTube URL: " + urls[i]);
 
                 var client = new MetaInspector(urls[i], {
                     maxRedirects: 10
                 });
                 client.on("fetch", function () {
-                    trackName = client.ogTitle;
-                    trackName = trackName.replace('Official Video', '');
-                    trackName = trackName.replace('Video', '');
-                    trackName = trackName.replace('Lyrics', '');
-                    trackName = trackName.replace('official video', '');
-                    trackName = trackName.replace('video', '');
-                    trackName = trackName.replace('lyrics', '');
-                    trackName = trackName.replace('()', '');
+                    trackName = trimTitle(client.ogTitle);
 
                     spotifyApi.searchTracks(trackName)
                         .then(function (data) {
-		                    console.log("Searching spotify for YouTube track: " + trackName);
-                            addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
+							console.log("Searching spotify for Vimeo or YouTube track: " + trackName);						
+						    addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
+							
                         }, function (err) {
-                            console.error(err);
-                        });
+                            console.log("error");
+					    });
 
                 });
 
@@ -253,18 +283,21 @@ bot.use(function (message, cb) {
                     }
                 });
             } else {
-                console.log("Adding an unknown source from" + urls[i]);
 
+				urls[i] = urls[i].slice(0, -3);
+
+                console.log("Adding an unknown source from " + urls[i]);
+				
                 var client = new MetaInspector(urls[i], {
                     maxRedirects: 10
                 });
                 client.on("fetch", function () {
-                    trackName = client.title;
+                    trackName = trimTitle(client.title);
+					
                     spotifyApi.searchTracks(trackName)
                         .then(function (data) {
-		                    console.log("Searching spotify for unknown source: " + trackName);
-                            addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
-
+		                    console.log("Searching spotify for unknown song track: " + trackName);
+                           	addTrack(data.body.tracks.items[0].id, data.body.tracks.items[0].name);
                         }, function (err) {
                             console.error(err);
                         });
