@@ -193,6 +193,7 @@ function trimTitle(trackName){
 	trackName = replaceall('()', '', trackName);
 	trackName = replaceall('Genius', ' ', trackName);
 	trackName = replaceall('|', '', trackName);
+	trackName = replaceall('&', '', trackName);
 	trackName = replaceall('  ', ' ', trackName);
 	
 	return trackName;
@@ -273,7 +274,7 @@ bot.use(function (message, cb) {
                     } else {
                         // console.log(response);
                         trackName = response.results[0].artistName + " " + response.results[0].trackName;
-
+						trackName = replaceall(" & ", ' ', trackName);
                         spotifyApi.searchTracks(trackName)
                             .then(function (data) {
                                 console.log("Searching spotify for iTunes track: " + trackName);
