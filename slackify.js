@@ -175,6 +175,9 @@ function trimTitle(trackName){
 	trackName = replaceall('Official', '', trackName);
 	trackName = replaceall('official', '', trackName);
 	trackName = replaceall('OFFICIAL', '', trackName);
+	trackName = replaceall('Music Video', '', trackName);
+	trackName = replaceall('music video', '', trackName);
+	trackName = replaceall('MUSIC VIDEO', '', trackName);
 	trackName = replaceall('Video', '', trackName);
 	trackName = replaceall('video', '', trackName);
 	trackName = replaceall('VIDEO', '', trackName);
