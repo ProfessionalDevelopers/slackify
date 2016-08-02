@@ -103,6 +103,8 @@ app.get('/callback', function (req, res) {
                 access_token = body.access_token,
                     refresh_token = body.refresh_token;
                 spotifyApi.setAccessToken(access_token);
+                    spotifyApi.setRefreshToken(refresh_token);
+
                 var options = {
                     url: 'https://api.spotify.com/v1/me',
                     headers: {
@@ -161,7 +163,14 @@ console.log('Listening on 8888');
 app.listen(8888);
 
 function addTrack(id, trackName) {
-    spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], {
+    spotifyApi.refreshAccessToken()
+  .then(function(data) {
+    console.log('The access token has been refreshed!');
+  }, function(err) {
+    console.log('Could not refresh access token', err);
+  });
+
+  spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], {
             position: 0
         })
         .then(function (data) {
@@ -311,7 +320,6 @@ bot.use(function (message, cb) {
                         }, function (err) {
                             console.error(err);
                         });
-
                 });
 
                 client.on("error", function (err) {
