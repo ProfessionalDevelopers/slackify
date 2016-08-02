@@ -190,10 +190,16 @@ function trimTitle(trackName){
 	trackName = replaceall('Lyrics', '', trackName);
 	trackName = replaceall('lyrics', '', trackName);
 	trackName = replaceall('LYRICS', '', trackName);
+	trackName = replaceall('Karaoke', ' ', trackName);
+	trackName = replaceall('KARAOKE', ' ', trackName);
+	trackName = replaceall('karaoke', ' ', trackName);
 	trackName = replaceall('()', '', trackName);
 	trackName = replaceall('Genius', ' ', trackName);
 	trackName = replaceall('|', '', trackName);
 	trackName = replaceall('&', '', trackName);
+	trackName = replaceall('By', '', trackName);
+	trackName = replaceall('by', '', trackName);
+	trackName = replaceall('BY', '', trackName);
 	trackName = replaceall('  ', ' ', trackName);
 	
 	return trackName;
