@@ -9,7 +9,8 @@ To set up:
 - Create a Spotify playlist, note your username and the id of the playlist if you copy the URI
 - Create a file called "env_variables" in the root of the project with the following format:
 
-```SLACK_TOKEN=XXXXXXX
+```
+SLACK_TOKEN=XXXXXXX
 SPOTIFY_ID=XXXXXXX
 SPOTIFY_SECRET=XXXXXXX
 SPOTIFY_REDIRECT_URI=http://where-is-this-running:8888/callback
