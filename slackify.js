@@ -166,11 +166,7 @@ function addTrack(id, trackName) {
     spotifyApi.refreshAccessToken()
   .then(function(data) {
     console.log('The access token has been refreshed!');
-  }, function(err) {
-    console.log('Could not refresh access token', err);
-  });
-
-  spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], {
+     spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], {
             position: 0
         })
         .then(function (data) {
@@ -178,6 +174,11 @@ function addTrack(id, trackName) {
         }, function (err) {
             console.log('Something went wrong!', err);
         });
+  }, function(err) {
+    console.log('Could not refresh access token', err);
+  });
+
+
 }
 
 function trimTitle(trackName){
