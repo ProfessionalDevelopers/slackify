@@ -163,9 +163,15 @@ console.log('Listening on 8888');
 app.listen(8888);
 
 function addTrack(id, trackName) {
-    spotifyApi.refreshAccessToken()
-  .then(function(data) {
-    console.log('The access token has been refreshed!');
+
+
+spotifyApi.refreshAccessToken()
+    .then(function(data) {
+      spotifyApi.setAccessToken(data.body.access_token)
+      if (data.body.refresh_token) {
+        spotifyApi.setRefreshToken(data.body.refresh_token)
+      }
+     
      spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], {
             position: 0
         })
@@ -174,9 +180,8 @@ function addTrack(id, trackName) {
         }, function (err) {
             console.log('Something went wrong!', err);
         });
-  }, function(err) {
-    console.log('Could not refresh access token', err);
-  });
+  })
+
 
 
 }
