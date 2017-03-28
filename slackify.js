@@ -170,6 +170,7 @@ spotifyApi.refreshAccessToken()
       spotifyApi.setAccessToken(data.body.access_token)
       if (data.body.refresh_token) {
         spotifyApi.setRefreshToken(data.body.refresh_token)
+        console.log("refreshed token");
       }
      
      spotifyApi.addTracksToPlaylist(SPOTIFY_USERNAME, SPOTIFY_PLAYLIST_ID, ["spotify:" + "track" + ":" + id], {
@@ -209,6 +210,8 @@ function trimTitle(trackName){
 	trackName = replaceall('KARAOKE', ' ', trackName);
 	trackName = replaceall('karaoke', ' ', trackName);
 	trackName = replaceall('()', '', trackName);
+	trackName = replaceall('(', '', trackName);
+	trackName = replaceall(')', '', trackName);
 	trackName = replaceall('Genius', ' ', trackName);
 	trackName = replaceall('|', '', trackName);
 	trackName = replaceall('&', '', trackName);
@@ -216,6 +219,15 @@ function trimTitle(trackName){
 	trackName = replaceall('by', '', trackName);
 	trackName = replaceall('BY', '', trackName);
 	trackName = replaceall('  ', ' ', trackName);
+	trackName = replaceall('featuring', ' ', trackName);
+	trackName = replaceall('feat.', ' ', trackName);
+	trackName = replaceall('feat', ' ', trackName);
+	trackName = replaceall('Featuring', ' ', trackName);
+	trackName = replaceall('Feat.', ' ', trackName);
+	trackName = replaceall('Feat', ' ', trackName);
+	trackName = replaceall('FEATURING', ' ', trackName);
+	trackName = replaceall('FEAT.', ' ', trackName);
+	trackName = replaceall('FEAT', ' ', trackName);
 	
 	return trackName;
 }
